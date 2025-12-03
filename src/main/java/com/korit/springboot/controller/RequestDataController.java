@@ -3,13 +3,11 @@ package com.korit.springboot.controller;
 import com.korit.springboot.dto.ReqDataDto6;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@CrossOrigin
 @RestController
 public class RequestDataController {
 
@@ -17,12 +15,12 @@ public class RequestDataController {
     @GetMapping("/req/data1")
     public ResponseEntity<Map<String,String>> reqGet1(HttpServletRequest request) {
         String name = request.getParameter("a");
-        int age = Integer.parseInt(request.getParameter("n"));
+        int age = Integer.parseInt(request.getParameter("b"));
         System.out.println("data1 : " + name);
+        System.out.println("data1 : " + age);
         //ok안에 값을 넣어줘야함 또는 build
         return ResponseEntity.ok().build();
     }
-
     //get요청 파라미터 받는 방법 2
     @GetMapping("/req/data2")
     public ResponseEntity<Map<String,String>> reqGet2(@RequestParam("a") String name, @RequestParam("b") int age) {
@@ -77,6 +75,8 @@ public class RequestDataController {
             @PathVariable String path,
             ReqDataDto6 dto6) {
         //ok안에 값을 넣어줘야함 또는 build
+        System.out.println(id);
+        System.out.println(path);
         System.out.println(dto6.getName());
         System.out.println(dto6.getAge());
         return ResponseEntity.ok().build();
