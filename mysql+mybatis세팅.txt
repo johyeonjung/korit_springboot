@@ -1,0 +1,22 @@
+1. 라이브러리 설치
+    - pom.xml의 dependencies 안에 mysql, mybatis 라이브러리 추가
+    - maven update
+
+2. application.properties 또는 application.yml 세팅
+    - spring.datasource 세부 세팅
+        driver, url, username, password
+    - mybatis 세부 세팅
+       mapper-locations: classpath:mapper/**/*.xml -> Mapper XML 파일을 찾을 수 있도록 경로지정
+       configuration:
+         map-underscore-to-camel-case: true    -> 카멜 <-> 스네이크
+       type-aliases-package: com.korit.springboot.entity -> Mapper XML에서 entity 객체 클래스 경로 지정
+
+3. mybatis Mapper 패키지 또는 xml 폴더 생성
+    - 패키지는 Controller, Service, Dto, Entity 등과 같은 레벨에 생성
+    - xml 폴더는 resources 폴더 하위에 mapper 생성
+    - mapper xml 파일 안에 꼭 들어가야하는 mapper 설정 태그 라이브 템플릿 세팅
+        <?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper
+           PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+           "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
