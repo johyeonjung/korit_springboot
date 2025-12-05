@@ -1,12 +1,20 @@
 package com.korit.springboot.controller;
 
+import com.korit.springboot.config.BeanConfig;
+import com.korit.springboot.dto.CreateUserReqDto;
+import com.korit.springboot.entity.UserEntity;
+import com.korit.springboot.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -18,30 +26,18 @@ import java.util.Map;
 // Controller -> 뷰 응답
 // RestController -> 데이터 응답
 @RestController
+@RequiredArgsConstructor
 public class UserController {
+//    @Autowired
+    private final UserService userService;
 
-    private String username = "test12";
-    private String password = "1234";
+    @PostMapping("/api/users")
+    public ResponseEntity<?> create( @RequestBody CreateUserReqDto dto) {
+//        userService.createUser(dto);
+        userService.duplicatedUsername(dto.getUsername());
+        int createdUserId= userService.createUser(dto);
 
-    @GetMapping("/users2")
-    public List userInfo() {
-        List users = new ArrayList();
-        users.add(username);
-        users.add(password);
-        return users;
+        return ResponseEntity.ok(Map.of("createdUserId",createdUserId));
     }
-
-//    @GetMapping("/users")
-//    public Map<String,String> getUsers(HttpServletResponse response) {
-//        response.setStatus(400);
-//        response.setContentType("application/json");
-//        return Map.of("username", username,"password", password);
-//    }
-
-    @GetMapping("/users")
-    public ResponseEntity<Map<String,String>> getUsers(HttpServletResponse response) {
-        return ResponseEntity.status(HttpStatus.OK).body(Map.of("username", username,"password", password));
-    }
-
 
 }

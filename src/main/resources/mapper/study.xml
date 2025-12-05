@@ -9,11 +9,20 @@
         values(default, #{name}, #{age})
     </insert>
 
-    <select id="findAllName">
+    <select id="findAllName" resultType="string">
         select
             name
         from
             study_tb
     </select>
+    <select id="findAll" resultType="java.util.Map">
+    select
+        study_id as studyId,
+        name,
+        age
+    from
+        study_tb
+    </select>
+
 
 </mapper>
