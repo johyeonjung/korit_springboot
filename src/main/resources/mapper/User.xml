@@ -4,31 +4,86 @@
    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.korit.springboot.mapper.UserMapper">
-    <resultMap id="userEntity" type="com.korit.springboot.entity.UserEntity">
+    <resultMap id="userResultMap" type="com.korit.springboot.entity.UserEntity">
         <id property="userId" column="user_id" />
         <result property="username" column="username" />
-        <result property="username" column="password" />
-        <result property="username" column="name" />
-        <result property="username" column="email" />
+        <result property="password" column="password" />
+        <result property="name" column="name" />
+        <result property="email" column="email" />
+        <collection property="userRoleEntities" resultMap="userRoleResultMap" />
     </resultMap>
 
-    <insert id="insert" useGeneratedKeys="true" keyProperty="userId">
-        insert into user_tb
-        values (default, #{username}, #{password},
-        #{name}, #{email})
+    <resultMap id="userRoleResultMap" type="userRoleEntity">
+        <id property="userRoleId" column="user_role_id" />
+        <result property="userId" column="urt_user_id" />
+        <result property="roleId" column="urt_role_id" />
+        <collection property="roleEntity" resultMap="roleResultMap" />
+
+    </resultMap>
+
+    <resultMap id="roleResultMap" type="RoleEntity">
+        <id property="roleId" column="role_id" />
+        <result property="roleName" column="role_name" />
+    </resultMap>
+
+
+    <!--    <insert id="insert" useGeneratedKeys="true" keyProperty="userId">-->
+<!--        insert into user_tb-->
+<!--        values (default, #{username}, #{password},-->
+<!--        #{name}, #{email})-->
+
+    <insert id="insert" statementType="CALLABLE" parameterType="UserEntity">
+        {call insert_user_ps(
+        #{username, mode=IN, jdbcType=VARCHAR},
+        #{password, mode=IN, jdbcType=VARCHAR},
+        #{name, mode=IN, jdbcType=VARCHAR},
+        #{email, mode=IN, jdbcType=VARCHAR},
+        #{userId, mode=OUT, jdbcType=INTEGER}
+        )}
 
     </insert>
-    <select id="findUserByUsername" resultMap="userEntity">
+    <select id="findUserByUsername" resultMap="userResultMap">
         select
-            user_id,
-            username,
-            password,
-            name,
-            email
+            ut.user_id,
+            ut.username,
+            ut.password,
+            ut.name,
+            ut.email,
+
+            urt.user_role_id,
+            urt.user_id as urt_user_id,
+            urt.role_id as urt_role_id,
+
+            rt.role_id,
+            rt.role_name
         from
-            user_tb
+            user_tb ut
+            left outer join user_role_tb urt on(urt.user_id = ut.user_id)
+            left outer join role_tb rt on (rt.role_id = urt.role_id)
         where
-            username = #{username}
+            ut.username = #{username}
+    </select>
+
+    <select id="findUserByUserId" resultMap="userResultMap">
+        select
+            ut.user_id,
+            ut.username,
+            ut.password,
+            ut.name,
+            ut.email,
+
+            urt.user_role_id,
+            urt.user_id as urt_user_id,
+            urt.role_id as urt_role_id,
+
+            rt.role_id,
+            rt.role_name
+        from
+            user_tb ut
+            left outer join user_role_tb urt on(urt.user_id = ut.user_id)
+            left outer join role_tb rt on (rt.role_id = urt.role_id)
+        where
+            ut.user_id = #{userId}
     </select>
 
 </mapper>

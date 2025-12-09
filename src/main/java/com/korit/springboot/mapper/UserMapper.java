@@ -1,5 +1,6 @@
 package com.korit.springboot.mapper;
 
+import com.korit.springboot.dto.SignupReqDto;
 import com.korit.springboot.entity.UserEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -8,4 +9,6 @@ import org.apache.ibatis.annotations.Param;
 public interface UserMapper {
     int insert(UserEntity userEntity);
     UserEntity findUserByUsername(@Param("username") String username);
+    UserEntity findUserByUserId(@Param("userId") int userId);
+
 }
